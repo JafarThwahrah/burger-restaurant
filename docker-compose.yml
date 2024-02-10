@@ -5,7 +5,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: postgresql://postgres:123@dev-db:5434/tarjama
+      DATABASE_URL: postgresql://postgres:123@dev-db:5432/tarjama
     depends_on:
       - dev-db
     networks:
