@@ -41,6 +41,11 @@ seed the database
 ```bash
 npm run db:seed
 ```
+to test units run
+```bash
+npm run test
+```
+
 you can navigate to this link for swagger api documentation
 
 http://localhost:3000/api-docs/
