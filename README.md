@@ -14,7 +14,7 @@ Before getting started, ensure you have the following installed on your system:
 - docker-compose
 - nodejs
 
-### 1. Installation
+### 2. Installation
 
 First, clone this repository to your local machine:
 
