@@ -23,20 +23,7 @@ export default {
         },
       },
     },
-    "/products": {
-      get: {
-        tags: ["Products"],
-        summary: "Get Available Products",
-        responses: {
-          200: {
-            description: "Success",
-          },
-          400: {
-            description: "Error",
-          },
-        },
-      },
-    },
+  
   },
   definitions: {
     Order: {
@@ -58,8 +45,6 @@ export default {
         },
       },
     },
-    Product: {
-      type: "object",
-    },
+ 
   },
 };

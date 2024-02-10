@@ -1,4 +1,20 @@
 export default {
-  notFound: (assetName: String) => `${assetName} not found.`,
   createdSuccessfully: "Created Successfully.",
+  productNotFound: 'No products found for the provided IDs',
+  productIngredientNotFound: 'Product ingredient not found.',
+  emailFailed: 'Error occurred while sending email.',
+  unAvailableStock : "No available stock to create your order.",
+  serverError : "server error occurred.",
+  productList: "Products received successfully" ,
+  joiProductRequired :'Product ID is required',
+  joiProductIdBase:  'Product ID must be a number',
+  joiProductIdInteger:  'Product ID must be an integer',
+  joiProductIdPositive:  'Product ID must be a positive number',
+  joiQuantityRequired :'Quantity ID is required',
+  joiQuantityBase:  'Quantity must be a number',
+  joiQuantityInteger:  'Quantity must be an integer',
+  joiQuantityPositive:  'Quantity must be a positive number',
+  joiOrderArray:  'At least one product must be provided',
+  joiProductsArrayRequired : 'Products array is required',
+
 };

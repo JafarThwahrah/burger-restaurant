@@ -1,6 +1,6 @@
 import swaggerJsdoc from "swagger-jsdoc";
 import orderSwagger from "./swagger/order.swagger";
-
+import productSwagger from "./swagger/product.swagger";
 const options = {
   swaggerDefinition: {
     info: {
@@ -15,7 +15,14 @@ const options = {
 
 const swaggerDefinitionWithConfig = {
   ...options.swaggerDefinition,
-  ...orderSwagger,
+  paths: {
+    ...orderSwagger.paths,
+    ...productSwagger.paths,
+  },
+  definitions: {
+    ...orderSwagger.definitions,
+    ...productSwagger.definitions,
+  },
 };
 
 const swaggerSpec = swaggerJsdoc({

@@ -1,54 +1,9 @@
 import prisma from "./prisma.service";
 import { ProductOrderPayLoad } from "../interfaces/order.interfaces";
-import { Ingredient } from "../interfaces/ingredient.interface";
-import { Product } from "../interfaces/product.interface";
-import sendEmail from "../mails/ingredientStockWarningEmal";
+import sendEmail from "../mails/ingredientStockWarningEmail";
 import { Request, Response } from "express";
-
-const checkIngredientsAvailablity = async (
-  ingredients: Ingredient[],
-  productsPayload: ProductOrderPayLoad[]
-) => {
-  // Fetch all product ingredients for the provided list of products
-  const productIngredients = await prisma.productIngredient.findMany({
-    where: {
-      productId: {
-        in: productsPayload.map((productPayLoad) => productPayLoad.productId),
-      },
-    },
-    include: {
-      ingredient: true, // Include the associated ingredient
-    },
-  });
-
-  // Calculate the total amount of consumed ingredients for each product
-  const totalIngredients: { [key: number]: number } = {};
-  productsPayload.forEach((productPayLoad) => {
-    const productIngredient = productIngredients.filter(
-      (productIngredient) =>
-        productIngredient.productId === productPayLoad.productId
-    );
-    productIngredient.forEach((productIngredient) => {
-      totalIngredients[productIngredient.ingredientId] =
-        (totalIngredients[productIngredient.ingredientId] || 0) +
-        productIngredient.amount * productPayLoad.quantity;
-    });
-  });
-
-  //check if each ingredient have the available amount to create the order
-  // console.log(totalIngredients);
-
-  let isAvailable = true;
-  for (const ingredient of ingredients) {
-    const totalQuantity = totalIngredients[ingredient.id];
-
-    if (ingredient.stock_limit < totalQuantity / 1000) {
-      isAvailable = false;
-      break;
-    }
-  }
-  return isAvailable;
-};
+import messages from "../utilities/messages";
+import { checkIngredientsAvailablity } from "../utilities/helpers";
 
 const orderService = {
   store: async (req: Request, res: Response) => {
@@ -56,6 +11,9 @@ const orderService = {
 
     //check if the received productIds are correct, the function return boolean
     const productIds = productsPayload.map((product) => product.productId);
+    if(!productIds)
+    throw new Error(messages.productNotFound);
+
     const productsList = await prisma.product.findMany({
       where: {
         id: {
@@ -65,7 +23,7 @@ const orderService = {
     });
     //if one product doesnt exist return error
     if (productsList.length < productIds.length)
-      throw new Error("No products found for the provided IDs");
+      throw new Error(messages.productNotFound);
 
     //get ingredients that the requested products have to check stock availability
     const ingredients = await prisma.productIngredient
@@ -89,7 +47,7 @@ const orderService = {
     );
 
     if (!ingredientsStockAvailability)
-      throw new Error("No available stock to create your order");
+      throw new Error(messages.unAvailableStock);
 
     const order = await prisma.order.create({});
     const products = productsPayload.map(
@@ -142,16 +100,22 @@ const orderService = {
                   data: { stock_warning_status: true },
                 });
               } catch (error) {
-                throw new Error("Error occurred while sending email.");
+                throw new Error(messages.emailFailed);
               }
             }
           } else {
-            throw new Error("Product ingredient not found.");
+            throw new Error(messages.productIngredientNotFound);
           }
         });
       }
     );
+    return order;
   },
+  
 };
 
 export default orderService;
+export function store(mockRequest: any, mockResponse: any): any {
+    throw new Error('Function not implemented.');
+}
+
