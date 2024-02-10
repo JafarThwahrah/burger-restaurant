@@ -41,7 +41,7 @@ seed the database
 ```bash
 npm run db:seed
 ```
-to test units run
+to run test units run
 ```bash
 npm run test
 ```
